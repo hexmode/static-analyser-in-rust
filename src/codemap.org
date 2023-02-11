@@ -1,11 +1,13 @@
-# The CodeMap
-
-A `CodeMap` gives you a central mapping from spans to their location in the
-group of files being analysed.
+* The CodeMap
+  :PROPERTIES:
+  :CUSTOM_ID: the-codemap
+  :END:
+A =CodeMap= gives you a central mapping from spans to their location in
+the group of files being analysed.
 
 As usual, lets add in a couple imports and module-level documentation.
 
-```rust
+#+begin_src rust
 //! A mapping from arbitrary locations and sections of source code to their
 //! contents.
 
@@ -16,14 +18,15 @@ use std::cmp;
 use std::cell::RefCell;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use lex::{Token, TokenKind};
-```
+#+end_src
 
-We start off with a `Span`. This is really just a wrapper around an integer,
-with the assumption that a span will **always** correspond to something in
-the `CodeMap`. This means using a span from one `CodeMap` with another will
-result in a panic if you are lucky, or silently give you garbage.
+We start off with a =Span=. This is really just a wrapper around an
+integer, with the assumption that a span will *always* correspond to
+something in the =CodeMap=. This means using a span from one =CodeMap=
+with another will result in a panic if you are lucky, or silently give
+you garbage.
 
-```rust
+#+begin_src rust
 /// A unique identifier pointing to a substring in some file.
 ///
 /// To get back the original string this points to you'll need to look it up
@@ -38,13 +41,13 @@ impl Span {
         Span(0)
     }
 }
-```
+#+end_src
 
-For our purposes, the `CodeMap` will just contain a list of `FileMap`s. These
-keep track of their name, contents, and the mapping of spans to locations in
-that content.
+For our purposes, the =CodeMap= will just contain a list of =FileMap=s.
+These keep track of their name, contents, and the mapping of spans to
+locations in that content.
 
-```rust
+#+begin_src rust
 /// A mapping of `Span`s to the files in which they are located.
 #[derive(Debug)]
 pub struct CodeMap {
@@ -61,12 +64,12 @@ pub struct FileMap {
     next_id: Rc<AtomicUsize>,
     items: RefCell<HashMap<Span, Range<usize>>>
 }
-```
+#+end_src
 
-The codemap has a couple useful methods for adding new files and looking up the
-string corresponding to a span.
+The codemap has a couple useful methods for adding new files and looking
+up the string corresponding to a span.
 
-```rust
+#+begin_src rust
 impl CodeMap {
     /// Create a new, empty `CodeMap`.
     pub fn new() -> CodeMap {
@@ -115,15 +118,15 @@ impl Default for CodeMap {
         CodeMap::new()
     }
 }
-```
+#+end_src
 
-You may have noticed that `FileMap` contains a `RefCell<HashMap<_>>`. This is 
-because we want to pass around multiple pointers to a file mapping, yet still
-be able to add new spans if we want to. It also contains a reference to the
-parent `CodeMap`'s counter so when we insert new spans into the `FileMap` 
-they'll still get globally unique IDs.
+You may have noticed that =FileMap= contains a =RefCell<HashMap<_>>=.
+This is because we want to pass around multiple pointers to a file
+mapping, yet still be able to add new spans if we want to. It also
+contains a reference to the parent =CodeMap='s counter so when we insert
+new spans into the =FileMap= they'll still get globally unique IDs.
 
-```rust
+#+begin_src rust
 impl FileMap {
     /// Get the name of this `FileMap`.
     pub fn filename(&self) -> &str {
@@ -160,15 +163,16 @@ impl FileMap {
         self.items.borrow().get(&span).cloned() 
     }
 }
-```
+#+end_src
 
-Users can freely add new spans to a `FileMap`, to do this we'll take in the 
-start and end indices, create a new span ID by incrementing our counter, then
-we insert the new span and range into the `items`. In debug builds we'll do 
-bounds checks, but it's an assumption that the `start` and `end` indices are
-both within bounds, and lie on valid codepoint boundaries.
+Users can freely add new spans to a =FileMap=, to do this we'll take in
+the start and end indices, create a new span ID by incrementing our
+counter, then we insert the new span and range into the =items=. In
+debug builds we'll do bounds checks, but it's an assumption that the
+=start= and =end= indices are both within bounds, and lie on valid
+codepoint boundaries.
 
-```rust
+#+begin_src rust
 impl FileMap {
     /// Ask the `FileMap` to give you the span corresponding to the half-open
     /// interval `[start, end)`.
@@ -228,13 +232,13 @@ impl FileMap {
         self.insert_span(start, end)
     }
 }
-```
+#+end_src
 
-To help after the tokenizing step, lets add a method which will take a bunch
-of tokens and register them with a `FileMap`. The same caveats as with 
-`insert_span()` will apply here.
+To help after the tokenizing step, lets add a method which will take a
+bunch of tokens and register them with a =FileMap=. The same caveats as
+with =insert_span()= will apply here.
 
-```rust
+#+begin_src rust
 impl FileMap {
     /// Register a set of tokenized inputs and turn them into a proper stream
     /// of tokens. Note that all the caveats from `insert_span()` also apply 
@@ -251,12 +255,12 @@ impl FileMap {
         registered
     }
 }
-```
+#+end_src
 
-To test that our `CodeMap` and `FileMap` behave as we expect them to, let's
-create some dummy "files" and try to create spans in them.
+To test that our =CodeMap= and =FileMap= behave as we expect them to,
+let's create some dummy "files" and try to create spans in them.
 
-```rust
+#+begin_src rust
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -346,4 +350,4 @@ mod tests {
         assert_eq!(equivalent_range.end, 8);
     }
 }
-```
+#+end_src

@@ -1,10 +1,11 @@
-# Error Handling
+* Error Handling
+  :PROPERTIES:
+  :CUSTOM_ID: error-handling
+  :END:
+This is just some code to hook =error-chain= up so we can use it for
+internal errors. Feel free to skip past this.
 
-This is just some code to hook `error-chain` up so we can use it for internal
-errors. Feel free to skip past this.
-
-
-```rust
+#+begin_src rust
 //! Types and traits used for internal errors.
 
 error_chain!{
@@ -35,4 +36,4 @@ error_chain!{
         IntParsing(::std::num::ParseIntError) #[doc = "An integer parsing error"];
     }
 }
-```
+#+end_src

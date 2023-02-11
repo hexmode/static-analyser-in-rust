@@ -1,0 +1,10 @@
+* Type Checking and Lowering to HIR
+  :PROPERTIES:
+  :CUSTOM_ID: type-checking-and-lowering-to-hir
+  :END:
+#+begin_src rust
+//! Typechecking and basic control flow graph generation.
+#+end_src
+
+TODO: Implement some basic type-checking and do "lowering" from the AST
+to a HIR.

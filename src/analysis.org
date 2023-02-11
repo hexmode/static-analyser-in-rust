@@ -1,0 +1,9 @@
+* Static Analysis
+  :PROPERTIES:
+  :CUSTOM_ID: static-analysis
+  :END:
+#+begin_src rust
+//! Static analysis passes (i.e. the whole point).
+#+end_src
+
+TODO: Create a trait for lints and passes.

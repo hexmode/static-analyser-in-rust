@@ -1,14 +1,16 @@
-# The Abstract Syntax Tree
-
-```rust
+* The Abstract Syntax Tree
+  :PROPERTIES:
+  :CUSTOM_ID: the-abstract-syntax-tree
+  :END:
+#+begin_src rust
 #![allow(missing_docs)]
 use codemap::Span;
-```
+#+end_src
 
-The most basic element of the AST is a `Literal`. These are either integer,
-float, or string literals.
+The most basic element of the AST is a =Literal=. These are either
+integer, float, or string literals.
 
-```rust
+#+begin_src rust
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum LiteralKind {
@@ -22,12 +24,12 @@ pub struct Literal {
     pub span: Span,
     pub kind: LiteralKind,
 }
-```
+#+end_src
 
-We also want to add a couple `From` impls so creating a `LiteralKind` is easy
-to do.
+We also want to add a couple =From= impls so creating a =LiteralKind= is
+easy to do.
 
-```rust
+#+begin_src rust
 impl From<usize> for LiteralKind {
     fn from(other: usize) -> LiteralKind {
         LiteralKind::Integer(other)
@@ -45,11 +47,11 @@ impl PartialEq<LiteralKind> for Literal {
         &self.kind == other
     }
 }
-```
+#+end_src
 
 We also want to deal with identifiers and dot-separated identifiers.
 
-```rust
+#+begin_src rust
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ident {
     pub span: Span,
@@ -75,4 +77,4 @@ impl<'a, T: AsRef<[&'a str]>> PartialEq<T> for DottedIdent {
             .all(|(l, r)| l == r)
     }
 }
-```
+#+end_src

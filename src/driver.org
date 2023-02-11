@@ -1,27 +1,27 @@
-# The Driver
-
-
-```rust
-
+* The Driver
+  :PROPERTIES:
+  :CUSTOM_ID: the-driver
+  :END:
+#+begin_src rust
 use codemap::CodeMap;
-```
+#+end_src
 
-The `Driver` contains a `CodeMap` and various other configuration settings 
-required to run the analysis.
+The =Driver= contains a =CodeMap= and various other configuration
+settings required to run the analysis.
 
-```rust
+#+begin_src rust
 /// The driver is in charge of orchestrating the whole analysis process and 
 /// making sure all the bits and pieces integrate nicely.
 #[derive(Debug)]
 pub struct Driver {
     codemap: CodeMap,
 }
-```
+#+end_src
 
-He has various methods to allow users to add files to be analysed, as well as 
-other convenience methods for setting things up.
+He has various methods to allow users to add files to be analysed, as
+well as other convenience methods for setting things up.
 
-```rust
+#+begin_src rust
 impl Driver {
     /// Create a new driver.
     pub fn new() -> Driver {
@@ -41,4 +41,4 @@ impl Default for Driver {
         Driver::new()
     }
 }
-```
+#+end_src

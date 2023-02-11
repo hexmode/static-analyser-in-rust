@@ -11,35 +11,44 @@ The main goal for me is using this exercise to learn a bit about building a pars
    :PROPERTIES:
    :CUSTOM_ID: building
    :END:
-If you want to build and read this locally you'll need to have the
-following installed:
+If you want to build and read this locally you'll need to have the following installed:
 
 - Rust (via [[https://rustup.rs/][rustup]])
-- tango (=cargo install tango=)
+- [[https://www.gnu.org/software/make/][make]]
+- Emacs (the included [[./tangle.sh][=tangle.sh=]] will use emacs to extract the source files)
 - mdbook (=cargo install mdbook=)
 
-If you've freshly cloned the repo then =src/lib.rs= won't yet exist.
-Cargo doesn't particularly like this, so we need to manually run =tango=
-to generate the Rust code.
+If you've freshly cloned the repo then =src/lib.rs= won't yet exist. Cargo doesn't particularly like this, so a make file target— =tangle= —for this specific purpose.
 
 #+begin_example
-$ tango
+$ make tangle
+Tangled 1 code block from analysis.org
+Tangled 8 code blocks from codemap.org
+Tangled 3 code blocks from driver.org
+Tangled 1 code block from errors.org
+Tangled 18 code blocks from lex.org
+Tangled 9 code blocks from lib.org
+Tangled 1 code block from lowering.org
+Tangled 4 code blocks from ast.org
+Tangled 3 code blocks from macros.org
+Tangled 2 code blocks from mod.org
+Tangled 7 code blocks from parser.org
 #+end_example
 
-If you look at the =src/= directory you'll see two copies of everything,
-one in markdown (=*.md=) and the other in Rust (=*.rs=). If there are
-ever any compile errors, it's often super useful to be able to look at
-the actual source code being compiled.
+(This target is, of course, invoked when you build the project using =make build=.)
 
-If you want to look at the book version of the code, you'll need to run
-=mdbook=.
+If you look at the =src/= directory you'll see two copies of everything, one in markdown (=*.md=) and the other in Rust (=*.rs=). If there are ever any compile errors, it's often super useful to be able to look at the actual source code being compiled.
+
+If you want to look at the book version of the code, you'll need to run =mdbook= which you can do using the =build-docs= target:
 
 #+begin_example
-$ mdbook build --open
+$ make build-docs
+2023-02-11 20:26:52 [INFO] (mdbook::book): Book building has started
+2023-02-11 20:26:52 [INFO] (mdbook::book): Running the html backend
 #+end_example
 
-And the =rustdoc= documentation can be viewed the usual way.
+And the =rustdoc= documentation can be viewed the usual way or with the =open= target:
 
 #+begin_example
-$ cargo doc --open
+$ make open
 #+end_example
