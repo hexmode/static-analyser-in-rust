@@ -16,7 +16,7 @@ use codemap::Span;
 use errors::*;
 #+end_src
 
-A lexer's job is to turn normal strings (which a human can read) into something more computer-friendly called a =Token=. In this crate, a =Token= will be comprised of a =Span= (more about that [[./codemap.html][later]]), and a =TokenKind= which lets us know which type of token we are dealing with. A =TokenKind= can be multiple different types representing multiple different things, so it makes sense to use a Rust enum here.
+A lexer's job is to turn normal strings (which a human can read) into something more computer-friendly called a =Token=. In this crate, a =Token= will be comprised of a =Span= (more about that [[./codemap.org][later]]), and a =TokenKind= which lets us know which type of token we are dealing with. A =TokenKind= can be multiple different types representing multiple different things, so it makes sense to use a Rust enum here.
 
 #+begin_src rust
 /// Any valid token in the Pascal programming language.
@@ -29,17 +29,17 @@ pub enum TokenKind {
     Identifier(String),
     QuotedString(String),
     Asterisk,
-    At, 
-    Carat, 
-    CloseParen, 
-    CloseSquare, 
+    At,
+    Carat,
+    CloseParen,
+    CloseSquare,
     Colon,
-    Dot, 
+    Dot,
     End,
     Equals,
-    Minus, 
-    OpenParen, 
-    OpenSquare, 
+    Minus,
+    OpenParen,
+    OpenSquare,
     Plus,
     Semicolon,
     Slash,
@@ -81,21 +81,21 @@ impl From<f64> for TokenKind {
 To make things easy, we'll break tokenizing up into little functions which take some string slice (=&str=) and spit out either a token or an error.
 
 #+begin_src rust
-fn tokenize_ident(data: &str) -> Result<(TokenKind, usize)> {
-    // identifiers can't start with a number
-    match data.chars().next() {
-        Some(ch) if ch.is_ascii_digit() => bail!("Identifiers can't start with a number"),
-        None => bail!(ErrorKind::UnexpectedEOF),
-        _ => {},
-    }
+  fn tokenize_ident(data: &str) -> Result<(TokenKind, usize)> {
+      // identifiers can't start with a number
+      match data.chars().next() {
+          Some(ch) if ch.is_ascii_digit() => bail!("Identifiers can't start with a number"),
+          None => bail!(ErrorKind::UnexpectedEOF),
+          _ => {},
+      }
 
-    let (got, bytes_read) = take_while(data, |ch| ch == '_' || ch.is_alphanumeric())?;
+      let (got, bytes_read) = take_while(data, |ch| ch == '_' || ch.is_alphanumeric())?;
 
-    // TODO: Recognise keywords using a `match` statement here.
+      // TODO: Recognise keywords using a `match` statement here.
 
-    let tok = TokenKind::Identifier(got.to_string());
-    Ok((tok, bytes_read))
-}
+      let tok = TokenKind::Identifier(got.to_string());
+      Ok((tok, bytes_read))
+  }
 #+end_src
 
 The =take_while()= function is just a helper which will call a closure on each byte, continuing until the closure no longer returns =true=.
@@ -104,7 +104,7 @@ It's pretty simple in that you just keep track of the current index, then afterw
 
 #+begin_src rust
 /// Consumes bytes while a predicate evaluates to true.
-fn take_while<F>(data: &str, mut pred: F) -> Result<(&str, usize)>  
+fn take_while<F>(data: &str, mut pred: F) -> Result<(&str, usize)>
 where F: FnMut(char) -> bool
 {
     let mut current_index = 0;

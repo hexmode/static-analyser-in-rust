@@ -2,34 +2,46 @@
   :PROPERTIES:
   :CUSTOM_ID: writing-a-static-analyser-in-rust
   :END:
-To try out the concept of [[https://en.wikipedia.org/wiki/Literate_programming][/Literate Programming/]] (using the awesome [[https://github.com/pnkfelix/tango][tango]] crate), I'm going to write a small static analyser for a basic Programming language. Because it's so much more interesting to use a programming language available in the wild, compared to some contrived example, we're going to analyse Delphi (a Pascal variant).
+Original introduction from [[https://github.com/Michael-F-Bryan/static-analyser-in-rust/blob/master/src/lib.md][Micheal Bryan]]:
+#+begin_quote
+  To try out the concept of [[https://en.wikipedia.org/wiki/Literate_programming][/Literate Programming/]] (using the awesome [[https://github.com/pnkfelix/tango][tango]] crate), I'm going to write a small static analyser for a basic Programming language. Because it's so much more interesting to use a programming language available in the wild, compared to some contrived example, we're going to analyse Delphi (a Pascal variant).
+#+end_quote
 
-Believe it or not, but this entire book is the actual source code for this static analyser. Check out the [[https://github.com/Michael-F-Bryan/static-analyser-in-rust][repo]] on GitHub if you want to see more.
+** What makes this project different
+Since Micheal put the project on github, I discovered it just as I was looking for a way to strengthen my Rust and shore up some things I had learned in comp sci a long time ago.  The focus of the project, the focus on literate programming, and the chance to use (only hopefully as of this writing) the CI and “Pages” infrastructure on Gitlab and Github simultaneously, piqued my interest.
 
-Here's your basic Hello World:
-
-#+begin_src pascal
-program HelloWorld;
-begin
-  writeln('Hello, World!');
-end.
-#+end_src
-
-All you need to do is use the IDE to hook that function up to be run whenever a button is clicked and it'll show a "Hello World!" dialog.
+The original project targeted Delphi and used tango.  I've changed everything to use [[https://orgmode.org/][Emacs' Org Mode]], strengthened the Makefile and hope to target [[https://www.freepascal.org/][Free Pascal]] instead of Delphi.
 
 #+begin_quote
   *Note:* The API docs for this crate should be placed alongside the book. You can access then [[../doc/static_analyser/index.html][here]] (you'll need to use =cargo doc --open= if viewing locally).
 #+end_quote
 
+** Hello World for Pascal
+
+Here's your basic Hello World:
+
+#+begin_src pascal
+  program HelloWorld;
+  begin
+    writeln('Hello, World!');
+  end.
+#+end_src
+
+This, and any other Pascal programs used for development are in my [[https://gitlab.com/hexmode1/pascal-progs][Pascal programs repository]].
+
+If you have the pascal repository checked out, you should just be able to type =make hello= in the repository and then =./hello= to run the program.
+
+** Getting started
+
 First up, lets add some top-level docs and import some crates we're going to need:
 
 #+begin_src rust
-//! A parser and static analysis library for exploring Delphi code.
+//! A parser and static analysis library for exploring Pascal code.
 //!
 //! This is written using a *Literate Programming* style, so you may find it
 //! easier to inspect the [rendered version] instead.
 //!
-//! [rendered version]: https://michael-f-bryan.github.io/static-analyser-in-rust/
+//! [rendered version]: https://hexmode.github.io/static-analyser-in-rust/
 
 #![deny(missing_docs)]
 
@@ -43,15 +55,15 @@ extern crate serde;
 extern crate serde_derive;
 #+end_src
 
-There are several steps you need to perform to do static analysis, first is tokenizing (often called /lexical analysis/). This stage turns the characters in the raw source code into =Tokens= like "if", "begin", integer literals and operators.
+There are several steps you need to perform to do static analysis, first is [[https://en.wikipedia.org/wiki/Lexical_analysis][lexical analysis]] or “tokenization”. This stage turns the characters in the raw source code into =Tokens= like =if=, =begin=, integer literals and operators.  We handle this in the [[./lex.org][lex module]].
 
 #+begin_src rust
 pub mod lex;
 #+end_src
 
-Next we do the parsing stage (/semantic analysis/) to convert our stream of tokens into an Abstract Syntax Tree. This is a representation of the program as it exists on disk.
+Next we do the syntactic analysis or [[https://en.wikipedia.org/wiki/Parsing][parsing]] to convert our stream of tokens into an [[https://en.wikipedia.org/wiki/Abstract_syntax_tree][Abstract Syntax Tree (AST)]]. This is a data structure that represents the program as it exists on disk.
 
-A lot of static analysis passes can get away with working purely at the AST level. For example, if you want to make sure people don't accidentally divide by zero it's just a case of looking for all division nodes and checking that the right hand isn't a numeric literal representing zero (e.g. =0= or =0.0=).
+Once we have an AST, we can perform our static analysis. For example, if you want to make sure people don't accidentally divide by zero it's just a case of looking for all division nodes and checking that the right hand isn't a numeric literal representing zero (e.g. =0= or =0.0=).
 
 Another useful lint which can be applied at this level is [[https://en.wikipedia.org/wiki/Cyclomatic_complexity][cyclomatic complexity]], i.e. how "complex" a function/procedure is. This is normally just a case of walking the body of a function and counting the number of branches, loops, and =try/catch= blocks encountered.
 
