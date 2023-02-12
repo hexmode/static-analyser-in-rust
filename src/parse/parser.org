@@ -12,11 +12,7 @@ high-level tree datastructure which reflects a program's syntax.
    :PROPERTIES:
    :CUSTOM_ID: the-general-idea
    :END:
-Before we start with parsing, lets look at an example chunk of Delphi
-code to get a feel for the language. A /unit file/ is the basic building
-block of a Delphi program, analogous to a =*.c= file. The =Main()=
-function is typically elsewhere in GUI programs because an application's
-endpoint is typically managed by the GUI framework or IDE.
+Before we start with parsing, lets look at an example chunk of Delphi code to get a feel for the language. A /unit file/ is the basic building block of a Delphi program, analogous to a =*.c= file. The =Main()= function is typically elsewhere in GUI programs because an application's endpoint is typically managed by the GUI framework or IDE.
 
 #+begin_src pascal
 unit Unit1;
@@ -54,14 +50,9 @@ end;
 end.
 #+end_src
 
-At a very high level, a unit file consists of a =unit= statement
-declaring the unit's name, followed by the =interface= (kinda like a
-=*.h= file) then an =implementation= section, before ending with a
-=end.=.
+At a very high level, a unit file consists of a =unit= statement declaring the unit's name, followed by the =interface= (kinda like a =*.h= file) then an =implementation= section, before ending with a =end.=.
 
-There's a formal language used to express a language's grammar called
-/Backus--Naur form/. That previous paragraph would translate to
-something like the following:
+There's a formal language used to express a language's grammar called /Backus--Naur form/. That previous paragraph would translate to something like the following:
 
 #+begin_example
 file        = unit_decl interface implementation "end.";
@@ -74,19 +65,15 @@ types       = "type" type_decl*;
 vars        = "var" var_decl*;
 #+end_example
 
-With the terminals (=WORD=, =SEMICOLON=, and friends) being their usual
-selves.
+With the terminals (=WORD=, =SEMICOLON=, and friends) being their usual selves.
 
-Delphi has a pretty simple syntax, so we're going to use a standard
-recursive descent parser. This is just an object which has a method
-roughly corresponding to each rule in the language's grammar.
+Delphi has a pretty simple syntax, so we're going to use a standard recursive descent parser. This is just an object which has a method roughly corresponding to each rule in the language's grammar.
 
 ** The Parser Object
    :PROPERTIES:
    :CUSTOM_ID: the-parser-object
    :END:
-As usual, before we can do anything else we're going to have to import a
-couple dependencies.
+As usual, before we can do anything else we're going to have to import a couple dependencies.
 
 #+begin_src rust
 use std::rc::Rc;
@@ -97,8 +84,7 @@ use parse::ast::{Literal, LiteralKind, Ident, DottedIdent};
 use errors::*;
 #+end_src
 
-The =Parser= itself just contains the tokens and their corresponding
-=FileMap=.
+The =Parser= itself just contains the tokens and their corresponding =FileMap=.
 
 #+begin_src rust
 /// A parser for turning a stream of tokens into a Abstract Syntax Tree.
@@ -134,15 +120,9 @@ impl Parser {
 }
 #+end_src
 
-We'll implement the various grammar rules from the bottom up. Meaning
-we'll start with the very basics like expressions, then build things up
-until we get to the overall program.
+We'll implement the various grammar rules from the bottom up. Meaning we'll start with the very basics like expressions, then build things up until we get to the overall program.
 
-First up lets have a go at parsing =Literals=. We do it in two steps,
-first you peek at the next token to make sure it's a kind you expect,
-then you unpack the token and convert it into it's equivalent AST node.
-A lot of the pattern matching boilerplate can be minimised with the
-judicious use of macros.
+First up lets have a go at parsing =Literals=. We do it in two steps, first you peek at the next token to make sure it's a kind you expect, then you unpack the token and convert it into it's equivalent AST node. A lot of the pattern matching boilerplate can be minimised with the judicious use of macros.
 
 #+begin_src rust
 impl Parser {
@@ -152,6 +132,7 @@ impl Parser {
       Some(&TokenKind::Decimal(_)) | 
       Some(&TokenKind::QuotedString(_)) => {},
       Some(_) => bail!("Expected a literal"),
+
       None => bail!(ErrorKind::UnexpectedEOF),
     };
 
@@ -171,11 +152,7 @@ impl Parser {
 }
 #+end_src
 
-Like the tokenizing module, we're going to need to write lots of tests
-to check our parser recognises things as we expect them to.
-Unfortunately the types and syntactic structures used will be slightly
-different, so we'll use macros to abstract away a lot of the
-boilerplate.
+Like the tokenizing module, we're going to need to write lots of tests to check our parser recognises things as we expect them to. Unfortunately the types and syntactic structures used will be slightly different, so we'll use macros to abstract away a lot of the boilerplate.
 
 #+begin_src rust
 macro_rules! parser_test {
@@ -202,8 +179,7 @@ macro_rules! parser_test {
 }
 #+end_src
 
-Now we have our basic test harness set up, lets see if literal parsing
-works.
+Now we have our basic test harness set up, lets see if literal parsing works.
 
 #+begin_src rust
 parser_test!(integer_literal, parse_literal, "123" => LiteralKind::Integer(123));
@@ -212,10 +188,7 @@ parser_test!(parse_float_literal, parse_literal, "12.3" => LiteralKind::Decimal(
 // parser_test!(parse_string_literal, parse_literal, "'12.3'" => LiteralKind::String("12.3".to_string()));
 #+end_src
 
-Another easy thing to implement is parsing identifiers and dotted
-identifiers (e.g. =foo.bar.baz=). To recognise a dotted identifier you
-first look for one identifier, then keep trying to take a pair of dots
-and idents until there are no more.
+Another easy thing to implement is parsing identifiers and dotted identifiers (e.g. =foo.bar.baz=). To recognise a dotted identifier you first look for one identifier, then keep trying to take a pair of dots and idents until there are no more.
 
 #+begin_src rust
 impl Parser {

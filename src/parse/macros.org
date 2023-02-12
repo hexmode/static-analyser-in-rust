@@ -2,8 +2,7 @@
   :PROPERTIES:
   :CUSTOM_ID: macros
   :END:
-To make testing easier, we're going to create a =tok!()= macro which
-uses the magic of =Into<Token>= to intelligently create tokens.
+To make testing easier, we're going to create a =tok!()= macro which uses the magic of =Into<Token>= to intelligently create tokens.
 
 #+begin_src rust
 /// Shorthand macro for generating a token from *anything* which can be 
@@ -34,11 +33,7 @@ macro_rules! tok {
 }
 #+end_src
 
-We also want to add some tests to make sure the code it expands to is
-sane. Amusingly enough, we're going to write a macro to help generate
-tests to test our =tok!()= macro. This helps sidestep the otherwise
-unnecessary boilerplate around creating loads of /almost similar/ tests
-which may deal with different types and syntactic structures.
+We also want to add some tests to make sure the code it expands to is sane. Amusingly enough, we're going to write a macro to help generate tests to test our =tok!()= macro. This helps sidestep the otherwise unnecessary boilerplate around creating loads of /almost similar/ tests which may deal with different types and syntactic structures.
 
 #+begin_src rust
 #[cfg(test)]
@@ -66,9 +61,7 @@ mod tests {
 }
 #+end_src
 
-When used this way, macros have a tendency to give horrible error
-messages. To make sure this won't happen I tried to pass in a
-non-existent =TokenKind= variant and see what happens:
+When used this way, macros have a tendency to give horrible error messages. To make sure this won't happen I tried to pass in a non-existent =TokenKind= variant and see what happens:
 
 #+begin_src example
 error[E0425]: cannot find value `DoesntExist` in this scope

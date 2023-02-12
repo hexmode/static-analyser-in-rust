@@ -2,8 +2,7 @@
   :PROPERTIES:
   :CUSTOM_ID: the-codemap
   :END:
-A =CodeMap= gives you a central mapping from spans to their location in
-the group of files being analysed.
+A =CodeMap= gives you a central mapping from spans to their location in the group of files being analysed.
 
 As usual, lets add in a couple imports and module-level documentation.
 
@@ -20,11 +19,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use lex::{Token, TokenKind};
 #+end_src
 
-We start off with a =Span=. This is really just a wrapper around an
-integer, with the assumption that a span will *always* correspond to
-something in the =CodeMap=. This means using a span from one =CodeMap=
-with another will result in a panic if you are lucky, or silently give
-you garbage.
+We start off with a =Span=. This is really just a wrapper around an integer, with the assumption that a span will *always* correspond to something in the =CodeMap=. This means using a span from one =CodeMap= with another will result in a panic if you are lucky, or silently give you garbage.
 
 #+begin_src rust
 /// A unique identifier pointing to a substring in some file.
@@ -43,9 +38,7 @@ impl Span {
 }
 #+end_src
 
-For our purposes, the =CodeMap= will just contain a list of =FileMap=s.
-These keep track of their name, contents, and the mapping of spans to
-locations in that content.
+For our purposes, the =CodeMap= will just contain a list of =FileMap=s. These keep track of their name, contents, and the mapping of spans to locations in that content.
 
 #+begin_src rust
 /// A mapping of `Span`s to the files in which they are located.
@@ -66,8 +59,7 @@ pub struct FileMap {
 }
 #+end_src
 
-The codemap has a couple useful methods for adding new files and looking
-up the string corresponding to a span.
+The codemap has a couple useful methods for adding new files and looking up the string corresponding to a span.
 
 #+begin_src rust
 impl CodeMap {
@@ -120,11 +112,7 @@ impl Default for CodeMap {
 }
 #+end_src
 
-You may have noticed that =FileMap= contains a =RefCell<HashMap<_>>=.
-This is because we want to pass around multiple pointers to a file
-mapping, yet still be able to add new spans if we want to. It also
-contains a reference to the parent =CodeMap='s counter so when we insert
-new spans into the =FileMap= they'll still get globally unique IDs.
+You may have noticed that =FileMap= contains a =RefCell<HashMap<_>>=. This is because we want to pass around multiple pointers to a file mapping, yet still be able to add new spans if we want to. It also contains a reference to the parent =CodeMap='s counter so when we insert new spans into the =FileMap= they'll still get globally unique IDs.
 
 #+begin_src rust
 impl FileMap {
@@ -165,12 +153,7 @@ impl FileMap {
 }
 #+end_src
 
-Users can freely add new spans to a =FileMap=, to do this we'll take in
-the start and end indices, create a new span ID by incrementing our
-counter, then we insert the new span and range into the =items=. In
-debug builds we'll do bounds checks, but it's an assumption that the
-=start= and =end= indices are both within bounds, and lie on valid
-codepoint boundaries.
+Users can freely add new spans to a =FileMap=, to do this we'll take in the start and end indices, create a new span ID by incrementing our counter, then we insert the new span and range into the =items=. In debug builds we'll do bounds checks, but it's an assumption that the =start= and =end= indices are both within bounds, and lie on valid codepoint boundaries.
 
 #+begin_src rust
 impl FileMap {
@@ -234,9 +217,7 @@ impl FileMap {
 }
 #+end_src
 
-To help after the tokenizing step, lets add a method which will take a
-bunch of tokens and register them with a =FileMap=. The same caveats as
-with =insert_span()= will apply here.
+To help after the tokenizing step, lets add a method which will take a bunch of tokens and register them with a =FileMap=. The same caveats as with =insert_span()= will apply here.
 
 #+begin_src rust
 impl FileMap {
@@ -257,8 +238,7 @@ impl FileMap {
 }
 #+end_src
 
-To test that our =CodeMap= and =FileMap= behave as we expect them to,
-let's create some dummy "files" and try to create spans in them.
+To test that our =CodeMap= and =FileMap= behave as we expect them to, let's create some dummy "files" and try to create spans in them.
 
 #+begin_src rust
 #[cfg(test)]

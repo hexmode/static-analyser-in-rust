@@ -6,8 +6,7 @@
 use codemap::CodeMap;
 #+end_src
 
-The =Driver= contains a =CodeMap= and various other configuration
-settings required to run the analysis.
+The =Driver= contains a =CodeMap= and various other configuration settings required to run the analysis.
 
 #+begin_src rust
 /// The driver is in charge of orchestrating the whole analysis process and 
@@ -18,8 +17,7 @@ pub struct Driver {
 }
 #+end_src
 
-He has various methods to allow users to add files to be analysed, as
-well as other convenience methods for setting things up.
+He has various methods to allow users to add files to be analysed, as well as other convenience methods for setting things up.
 
 #+begin_src rust
 impl Driver {

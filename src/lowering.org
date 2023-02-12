@@ -6,5 +6,4 @@
 //! Typechecking and basic control flow graph generation.
 #+end_src
 
-TODO: Implement some basic type-checking and do "lowering" from the AST
-to a HIR.
+TODO: Implement some basic type-checking and do "lowering" from the AST to a HIR.

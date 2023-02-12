@@ -2,8 +2,7 @@
   :PROPERTIES:
   :CUSTOM_ID: error-handling
   :END:
-This is just some code to hook =error-chain= up so we can use it for
-internal errors. Feel free to skip past this.
+This is just some code to hook =error-chain= up so we can use it for internal errors. Feel free to skip past this.
 
 #+begin_src rust
 //! Types and traits used for internal errors.
