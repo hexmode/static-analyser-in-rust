@@ -26,6 +26,9 @@ open: cargo build-docs tangle
 	cargo doc --open
 	${OPEN} target/book/index.html
 
+test: cargo build-crate
+	cargo test
+
 build-crate: cargo tangle
 	cargo build
 
