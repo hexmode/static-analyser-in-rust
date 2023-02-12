@@ -3,7 +3,7 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-.PHONY: open build build-crate build-docs clean word-count todo tangle try-install emacs markdown pandoc cargo ripgrep mdbook
+.PHONY: open build build-crate build-docs clean word-count todo tangle try-install emacs markdown cargo ripgrep mdbook
 
 all: build-crate build-docs
 
@@ -48,8 +48,8 @@ tangle: ${RS_FILES}
 
 markdown: ${MD_FILES}
 
-%.md: %.org pandoc
-	pandoc -r org -i $< -w gfm -o $@
+%.md: %.org emacs
+	emacs -Q --batch --eval "(progn (require 'ox-md) (let ((org-export-with-toc nil)) (org-publish-initialize-cache \"build\") (org-md-publish-to-md nil \"$<\" \"\")))"
 
 %.rs: %.org emacs
 	emacs -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"$<\" (file-name-nondirectory \"$@\") \"rust\")))"
@@ -62,7 +62,7 @@ try-install: cargo
 			cargo install ${target} || \
 			exit 10
 
-emacs pandoc cargo:
+emacs cargo:
 	bash -c 'type $@ >/dev/null 2>&1' || (echo Please install $@.; exit 1)
 
 mdbook:
