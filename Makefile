@@ -47,15 +47,17 @@ word-count:
 todo: ripgrep
 	rg 'TODO|FIXME' --iglob '*.org'
 
-tangle: ${RS_FILES}
+tangle: ${RS_FILES} emacs
 
-markdown: ${MD_FILES}
+markdown: ${MD_FILES} emacs
 
-%.md: %.org emacs
+%.md: %.org
 	emacs -Q --batch --eval "(progn (require 'ox-md) (let ((org-export-with-toc nil)) (org-publish-initialize-cache \"build\") (org-md-publish-to-md nil \"$<\" \"\")))"
+	touch $@
 
-%.rs: %.org emacs
+%.rs: %.org
 	emacs -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"$<\" (file-name-nondirectory \"$@\") \"rust\")))"
+	touch $@
 
 try-install: cargo
 	test -n "${target}" || ( echo must supply package argument for try-install target; exit 1 )
