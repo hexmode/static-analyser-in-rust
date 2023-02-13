@@ -248,7 +248,7 @@ fn skipping_whitespace_when_first_is_a_letter_returns_zero() {
   *TODO:* Tokenize string literals
 #+end_quote
 
-According to [[https://wwgetw.prestwoodboards.com/ASPSuite/KB/Document_View.asp?QID=101505][the internets]], a comment in Pascal can be written multiple ways.
+According to [[https://web.archive.org/web/20121101023858/https://www.prestwoodboards.com/ASPSuite/KB/Document_View.asp?QID=101505][the internets]], a comment in Pascal can be written multiple ways.
 
 #+begin_quote
   *Commenting Code*
