@@ -72,7 +72,7 @@ Another useful lint which can be applied at this level is [[https://en.wikipedia
 pub mod parse;
 #+end_src
 
-The third step is type checking and generating a High level Intermediate Representation (HIR), often referred to as “lowering” (converting from a high level representation to a lower one).
+The third step is type checking and generating a High level [[https://en.wikipedia.org/wiki/Intermediate_representation][Intermediate Representation]] (HIR), often referred to as “[[./lowering.org][lowering]]”—the process of converting from a high level representation to a lower one. (For a more thorough explanation of intermediate representations, see Fred Chow's paper: [[https://dl.acm.org/doi/pdf/10.1145/2542661.2544374][Intermediate Representation: The increasing significance of intermediate representations in compilers]].)
 
 While the AST is very flexible and useful, it works at the language syntax level and completely misses the /semantics/ of a language. This means an expression like ='foo' + 42= or dereferencing a float is a perfectly valid AST node.
 
@@ -82,25 +82,25 @@ To perform some of the more advanced analyses we'll need to have access to the f
 pub mod lowering;
 #+end_src
 
-Now we've /finally/ resolved all imports and types we're /guaranteed/ to have a syntactically and semantically valid program. This doesn't mean it's correct though! At this stage we can create passes which employ the full strength of the compiler/static analyser to check the /logic/ of our program. This lets us do
+Now we've /finally/ resolved all imports and types we're /guaranteed/ to have a syntactically and semantically valid program. This doesn't mean it's correct though! At this stage we can create passes which employ the full strength of the compiler/static analyser to check the /logic/ of our program. This lets us do [[./analysis.org][analysis]].
 
 #+begin_src rust
 pub mod analysis;
 #+end_src
 
-We also need to handle internal errors. To keep things clean lets put that in its own module too.
+We also need to handle internal [[./errors.org][errors]]. To keep things clean lets put that in its own module too.
 
 #+begin_src rust
 pub mod errors;
 #+end_src
 
-Another very important thing to have is a mapping which lets you talk about a logical chunk of code (i.e. /this/ function body or /that/ string literal) and retrieve the corresponding source code. This will be crucial for the later steps where we want to indicate where an error occurred to the user.
+Another very important thing to have is a mapping, or [[./codemap.org][codemap]], which lets you talk about a logical chunk of code (i.e. /this/ function body or /that/ string literal) and retrieve the corresponding source code. This will be crucial for the later steps where we want to indicate where an error occurred to the user.
 
 #+begin_src rust
 pub mod codemap;
 #+end_src
 
-Finally, there's the =Driver=. He's in charge of the show an is usually the thing you'll want to invoke or hook into to tweak the analysis process.
+Finally, there's the [[./driver.org][driver]]. It's in charge of the show and is usually the thing you'll want to invoke or hook into to tweak the analysis process.
 
 #+begin_src rust
 mod driver;
