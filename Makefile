@@ -3,6 +3,10 @@ ifndef VERBOSE
 .SILENT:
 endif
 
+ifeq (,$(findstring ${HOME}/.cargo/bin,$(PATH)))
+PATH := ${HOME}/.cargo/bin:${PATH}
+endif
+
 .PHONY: open build build-crate build-docs clean word-count todo tangle try-install emacs markdown cargo ripgrep mdbook
 
 all: build-crate build-docs
