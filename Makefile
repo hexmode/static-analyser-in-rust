@@ -60,11 +60,11 @@ markdown: ${MD_FILES} emacs
 	touch $@
 
 try-install: cargo
-	test -n "${target}" || ( echo must supply package argument for try-install target; exit 1 )
-	export ans=`bash -c 'read -p "Install ${target} with cargo (N/y)? " ans; \
+	test -n "${package}" || ( echo must supply package argument for try-install target; exit 1 )
+	export ans=`bash -c 'read -p "Install ${package} with cargo (N/y)? " ans; \
 		ans=$${ans:-n}; echo $${ans:0:1} | tr "[:upper:]" "[:lower:]"'` && \
 		test "$$ans" = "y" && \
-			cargo install ${target} || \
+			cargo install --locked ${package} || \
 			exit 10
 
 emacs cargo:
