@@ -167,9 +167,9 @@ lexer_test!(FAIL: tokenize_ident_cant_start_with_number, tokenize_ident, "7Foo_b
 lexer_test!(FAIL: tokenize_ident_cant_start_with_dot, tokenize_ident, ".Foo_bar");
 #+end_src
 
-Note that the macro calls =into()= on the result for us. Because we've defined =From<&'a str>= for =TokenKind=, we can use ="Foo"= as shorthand for the output.
+Note that the macro calls =from()= on the desired result for us. Because we've defined =From<&'a str>= for =TokenKind=, we can use ="Foo"= as shorthand for the output.
 
-It'also fairly easy to tokenize integers, they're just a continuous string of digits. However if we also want to be able to deal with decimal numbers we need to accept something that /may/ look like two integers separated by a dot. In this case we the predicate needs to keep track of how many =.='s it has seen, returning =false= the moment it sees more than one.
+It's also fairly easy to tokenize integers, they're just a continuous string of digits. However if we also want to be able to deal with decimal numbers we need to accept something that /may/ look like two integers separated by a decimal point. In this case we the predicate needs to keep track of how many =.='s it has seen, returning =false= the moment it sees more than one.
 
 #+begin_src rust
 /// Tokenize a numeric literal.

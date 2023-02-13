@@ -61,18 +61,18 @@ There are several steps you need to perform to do static analysis, first is [[ht
 pub mod lex;
 #+end_src
 
-Next we do the syntactic analysis or [[https://en.wikipedia.org/wiki/Parsing][parsing]] to convert our stream of tokens into an [[https://en.wikipedia.org/wiki/Abstract_syntax_tree][Abstract Syntax Tree (AST)]]. This is a data structure that represents the program as it exists on disk.
+Next we do the syntactic analysis or [[https://en.wikipedia.org/wiki/Parsing][parsing]] to convert our stream of tokens into an [[https://en.wikipedia.org/wiki/Abstract_syntax_tree][Abstract Syntax Tree (AST)]]. This is a data structure that represents the program as it exists on disk. Check [[./parse/ast.org][ast]] for this.
 
 Once we have an AST, we can perform our static analysis. For example, if you want to make sure people don't accidentally divide by zero it's just a case of looking for all division nodes and checking that the right hand isn't a numeric literal representing zero (e.g. =0= or =0.0=).
 
-Another useful lint which can be applied at this level is [[https://en.wikipedia.org/wiki/Cyclomatic_complexity][cyclomatic complexity]], i.e. how "complex" a function/procedure is. This is normally just a case of walking the body of a function and counting the number of branches, loops, and =try/catch= blocks encountered.
+Another useful lint which can be applied at this level is [[https://en.wikipedia.org/wiki/Cyclomatic_complexity][cyclomatic complexity]], i.e. how “complex” a function/procedure is. This is normally just a case of walking the body of a function and counting the number of branches, loops, and =try/catch= blocks encountered.
 
 #+begin_src rust
 #[macro_use]
 pub mod parse;
 #+end_src
 
-The third step is type checking and generating a High level Intermediate Representation (HIR), often referred to as "lowering" (converting from a high level representation to a lower one).
+The third step is type checking and generating a High level Intermediate Representation (HIR), often referred to as “lowering” (converting from a high level representation to a lower one).
 
 While the AST is very flexible and useful, it works at the language syntax level and completely misses the /semantics/ of a language. This means an expression like ='foo' + 42= or dereferencing a float is a perfectly valid AST node.
 
