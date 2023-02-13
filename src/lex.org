@@ -215,6 +215,7 @@ lexer_test!(tokenizing_decimal_stops_at_alpha, tokenize_number, "123.4asdfghj" =
 
 One last utility we're going to need is the ability to skip past whitespace characters and comments. These will be implemented as two separate functions which are wrapped by a single =skip()=.
 
+** Whitespace
 Let's deal with whitespace first seeing as that's easiest.
 
 #+begin_src rust
@@ -244,20 +245,19 @@ fn skipping_whitespace_when_first_is_a_letter_returns_zero() {
 }
 #+end_src
 
+** Comments
+A comment in Pascal [[https://wiki.freepascal.org/Comments][can be written multiple ways]].
+*** Block comments
 #+begin_quote
-  *TODO:* Tokenize string literals
+  Block comments are delimited by the characters ={ }= or by the bigrams =(* *)=.  The latter is a relict from times where computer keyboards did not necessarily have curly braces. It is /not wrong/ to use the bigrams, but they are at large superseded by the use of curly braces.  There is one place where the =(*= and =*)= bigrams can be useful. if you are testing code and want to "dike out" or disable certain sections by marking them as inoperative, the pieces can be surrounded by these bigrams, and it will not matter if there are ={= and =}= comments inside of them.
 #+end_quote
-
-According to [[https://web.archive.org/web/20121101023858/https://www.prestwoodboards.com/ASPSuite/KB/Document_View.asp?QID=101505][the internets]], a comment in Pascal can be written multiple ways.
-
+*** Compiler directives
 #+begin_quote
-  *Commenting Code*
-
-  Pascal uses =//= for a single line comment and both ={}= and =(**)= for multiple line comments. Although you can nest different types of multiple line comments, it is recommended that you don't.
-
-  *Compiler Directives - =$=*
-
-  A special comment. Delphi compiler directives are in the form of ={$DIRECTIVE}=. Of interest for comments is using the =$IFDEF= compiler directive to remark out code.
+  There is a special class of comment, either beginning ={$= or =(*$=. This indicates the start of a /[[https://wiki.freepascal.org/Compiler_directive][compiler directive]]/, a special instruction to the compiler about the program, but it does not actually generate instructions to be executed.
+#+end_quote
+*** Line Comments
+#+begin_quote
+  Line comments or inline comments start with comment delimiter =//= and continue until the end of the line. 
 #+end_quote
 
 #+begin_src rust
@@ -301,25 +301,43 @@ comment_test!(comment_skip_ignores_alphanumeric, "123 hello world" => 0);
 comment_test!(comment_skip_ignores_whitespace, "   (* *) 123 hello world" => 0);
 #+end_src
 
+** Skipping whitespace and comments
 Lastly, we group the whitespace and comment skipping together seeing as they both do the job of skipping characters we don't care about.
 
 #+begin_src rust
-/// Skip past any whitespace characters or comments.
-fn skip(src: &str) -> usize {
-    let mut remaining = src;
+  /// Skip past any whitespace characters or comments.
+  fn skip(src: &str) -> usize {
+      let mut remaining = src;
 
-    loop {
-        let ws = skip_whitespace(remaining);
-        remaining = &remaining[ws..];
-        let comments = skip_comments(remaining);
-        remaining = &remaining[comments..];
+      loop {
+          let ws = skip_whitespace(remaining);
+          remaining = &remaining[ws..];
+          let comments = skip_comments(remaining);
+          remaining = &remaining[comments..];
 
-        if ws + comments == 0 {
-            return src.len() - remaining.len();
-        }
-    }
-}
+          if ws + comments == 0 {
+              return src.len() - remaining.len();
+          }
+      }
+  }
+
+  macro_rules! skip_combo_test {
+      ($name:ident, $src:expr => $should_be:expr) => {
+          #[cfg(test)]
+          #[test]
+          fn $name() {
+              let got = skip($src);
+              assert_eq!(got, $should_be);
+          }
+      }
+  }
+
+  skip_combo_test!(comment_with_ws_now_skips, "   (* *) 123 hello world" => 9);
+  skip_combo_test!(comment_and_newline_ws_skips, "// nothing to see here\n\n hello world" => 25);
 #+end_src
+
+** String literals
+*TODO:* Tokenize string literals
 
 ** The Main Tokenizer Function
    :PROPERTIES:
